@@ -1,0 +1,240 @@
+﻿@model CalmSpire.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard">
+    <div class="container-fluid">
+        <div class="dashboard-header mb-4">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h1 class="dashboard-title">
+                        <i class="fas fa-sun text-warning me-2"></i>
+                        Welcome back, @Model.UserName.Split(' ').FirstOrDefault()!
+                    </h1>
+                    <p class="dashboard-subtitle text-muted">
+                        How are you feeling today? Let's continue your wellness journey.
+                    </p>
+                </div>
+                <div class="col-auto">
+                    <div class="dashboard-date">
+                        <i class="fas fa-calendar-alt me-1"></i>
+                        @DateTime.Today.ToString("dddd, MMMM d, yyyy")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Mood Chart Section -->
+            <div class="col-lg-8">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-chart-line text-primary me-2"></i>
+                            7-Day Mood Trend
+                        </h5>
+                        @if (Model.AverageMoodThisWeek.HasValue)
+                        {
+                            <span class="badge bg-primary rounded-pill">
+                                Avg: @Model.AverageMoodThisWeek.Value.ToString("F1")
+                            </span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (Model.RecentMoods.Any())
+                        {
+                            <canvas id="moodChart" width="400" height="150"></canvas>
+                        }
+                        else
+                        {
+                            <div class="empty-state text-center py-5">
+                                <i class="fas fa-chart-line text-muted mb-3" style="font-size: 3rem;"></i>
+                                <h6 class="text-muted">No mood data yet</h6>
+                                <p class="text-muted small">Start tracking your daily mood to see trends here.</p>
+                                <a href="@Url.Action("Create", "Mood")" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus me-1"></i>Log Today's Mood
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="col-lg-4">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="stat-card bg-primary">
+                            <div class="stat-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>@(Model.RecentMoods.Count)</h3>
+                                <p>Mood entries this week</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="stat-card bg-success">
+                            <div class="stat-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>@Model.TotalJournalEntries</h3>
+                                <p>Journal entries</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="stat-card bg-info">
+                            <div class="stat-icon">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>@Model.AssessmentsCompleted</h3>
+                                <p>Assessments completed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-rocket text-success me-2"></i>
+                            Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-lg-3 col-md-6">
+                                <a href="@Url.Action("Create", "Mood")" class="quick-action-card">
+                                    <div class="qa-icon bg-primary">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <div class="qa-content">
+                                        <h6>Log Mood</h6>
+                                        <p class="small text-muted">Track how you're feeling today</p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-lg-3 col-md-6">
+                                <a href="@Url.Action("Create", "Journal")" class="quick-action-card">
+                                    <div class="qa-icon bg-success">
+                                        <i class="fas fa-plus"></i>
+                                    </div>
+                                    <div class="qa-content">
+                                        <h6>New Entry</h6>
+                                        <p class="small text-muted">Write in your journal</p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-lg-3 col-md-6">
+                                <a href="@Url.Action("Index", "Assessment")" class="quick-action-card">
+                                    <div class="qa-icon bg-warning">
+                                        <i class="fas fa-clipboard-check"></i>
+                                    </div>
+                                    <div class="qa-content">
+                                        <h6>Take Assessment</h6>
+                                        <p class="small text-muted">Check your mental health</p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-lg-3 col-md-6">
+                                <a href="@Url.Action("Index", "Meditation")" class="quick-action-card">
+                                    <div class="qa-icon bg-info">
+                                        <i class="fas fa-om"></i>
+                                    </div>
+                                    <div class="qa-content">
+                                        <h6>Meditate</h6>
+                                        <p class="small text-muted">Find inner peace</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        @if (Model.RecentMoods.Any())
+        {
+            <text>
+                // Prepare data for chart
+                const moodData = [
+                @Html.Raw(string.Join(",", Model.RecentMoods.Select(m => $"{{x: '{m.EntryDate:MM/dd}', y: {m.MoodScore}}}")))
+                ];
+
+                // Create the chart
+                const ctx = document.getElementById('moodChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Mood Score',
+                            data: moodData,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'category',
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 10,
+                                ticks: {
+                                    stepSize: 1
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            }
+                        },
+                        elements: {
+                            point: {
+                                hoverBackgroundColor: '#3b82f6'
+                            }
+                        }
+                    }
+                });
+            </text>
+        }
+    </script>
+}

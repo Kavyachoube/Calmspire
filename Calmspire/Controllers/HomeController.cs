@@ -1,24 +1,30 @@
-using Calmspire.Models;
+using CalmSpire.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using CalmSpire.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 
-namespace Calmspire.Controllers
+namespace CalmSpire.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
+            // Redirect to dashboard if user is already logged in
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
             return View();
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Features()
         {
             return View();
         }

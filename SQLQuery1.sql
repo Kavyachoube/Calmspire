@@ -1,0 +1,49 @@
+﻿CREATE DATABASE CalmSpireDb;
+GO
+
+USE CalmSpireDb;
+GO
+
+-- Users Table
+CREATE TABLE Users (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Username NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(200) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(500) NOT NULL
+);
+
+-- Mood Entries Table
+CREATE TABLE MoodEntries (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    Mood NVARCHAR(50) NOT NULL,
+    Notes NVARCHAR(MAX),
+    Date DATETIME DEFAULT GETDATE()
+);
+
+-- Gratitude Journal Table
+CREATE TABLE GratitudeJournals (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    EntryText NVARCHAR(MAX) NOT NULL,
+    Date DATETIME DEFAULT GETDATE()
+);
+
+-- Assessments Table
+CREATE TABLE Assessments (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    Question NVARCHAR(MAX),
+    Answer NVARCHAR(MAX),
+    Score INT,
+    Date DATETIME DEFAULT GETDATE()
+);
+
+-- Chat Logs Table
+CREATE TABLE ChatLogs (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    Message NVARCHAR(MAX),
+    Response NVARCHAR(MAX),
+    Date DATETIME DEFAULT GETDATE()
+);

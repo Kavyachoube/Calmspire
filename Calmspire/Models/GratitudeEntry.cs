@@ -2,18 +2,16 @@
 
 namespace CalmSpire.Models
 {
-    public class MoodEntry
+    public class GratitudeEntry
     {
         public int Id { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; } = null!;
 
-        [Range(1, 10)]
-        public int MoodScore { get; set; }
-
+        [Required]
         [StringLength(500)]
-        public string? Notes { get; set; }
+        public string Content { get; set; } = string.Empty;
 
         public DateTime EntryDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

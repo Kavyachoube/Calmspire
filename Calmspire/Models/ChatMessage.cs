@@ -2,20 +2,19 @@
 
 namespace CalmSpire.Models
 {
-    public class MoodEntry
+    public class ChatMessage
     {
         public int Id { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; } = null!;
 
-        [Range(1, 10)]
-        public int MoodScore { get; set; }
+        [Required]
+        public string Message { get; set; } = string.Empty;
 
-        [StringLength(500)]
-        public string? Notes { get; set; }
+        [Required]
+        public string Response { get; set; } = string.Empty;
 
-        public DateTime EntryDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -1,4 +1,4 @@
-namespace Calmspire.Models
+﻿namespace CalmSpire.Models.ViewModels
 {
     public class ErrorViewModel
     {

@@ -1,8 +1,156 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome to Your Mental Wellness Journey";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Your Journey to
+                        <span class="text-primary">Mental Wellness</span>
+                        Starts Here
+                    </h1>
+                    <p class="hero-subtitle">
+                        Track your mood, reflect through journaling, access meditation resources,
+                        and get AI-powered support—all in one peaceful, private space designed for your wellbeing.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="@Url.Action("Register", "Account")" class="btn btn-primary btn-lg me-3">
+                            Start Your Journey
+                        </a>
+                        <a href="@Url.Action("Features", "Home")" class="btn btn-outline-primary btn-lg">
+                            Learn More
+                        </a>
+                    </div>
+                    <div class="hero-stats mt-4">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <i class="fas fa-heart text-primary"></i>
+                                    <div class="stat-label">Mood Tracking</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <i class="fas fa-book text-success"></i>
+                                    <div class="stat-label">Private Journal</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <i class="fas fa-robot text-info"></i>
+                                    <div class="stat-label">AI Support</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image">
+                    <img src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=800"
+                         alt="Person meditating peacefully in nature"
+                         class="img-fluid rounded-3 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<section class="features-preview py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="section-title">Everything You Need for Mental Wellness</h2>
+                <p class="section-subtitle">
+                    CalmSpire provides comprehensive tools to support your mental health journey,
+                    from daily mood tracking to personalized AI assistance.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Mood Tracking</h4>
+                    <p>Log your daily emotions and visualize patterns with beautiful charts to understand your mental health trends.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-journal-whills"></i>
+                    </div>
+                    <h4>Private Journaling</h4>
+                    <p>Express your thoughts and feelings in a secure, private space with unlimited journal entries.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h4>Meditation Resources</h4>
+                    <p>Access curated meditation videos, audio guides, and mindfulness exercises for inner peace.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h4>Self-Assessments</h4>
+                    <p>Take validated assessments to gain insights into your mental health and track your progress over time.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h4>AI Support Chat</h4>
+                    <p>Get 24/7 support from our empathetic AI assistant trained to provide helpful mental health guidance.</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h4>Gratitude Practice</h4>
+                    <p>Cultivate positivity with daily gratitude entries to improve your overall well-being and mindset.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="cta-title">Ready to Begin Your Wellness Journey?</h2>
+                <p class="cta-subtitle">
+                    Join thousands of users who have found peace and clarity with CalmSpire.
+                    Your mental health matters, and we're here to support you every step of the way.
+                </p>
+                <a href="@Url.Action("Register", "Account")" class="btn btn-primary btn-lg">
+                    Get Started Free
+                </a>
+                <p class="mt-3 text-muted small">
+                    <i class="fas fa-lock"></i> Your privacy is our priority. All data is encrypted and secure.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
