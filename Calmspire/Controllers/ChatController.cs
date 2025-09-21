@@ -1,58 +1,71 @@
-﻿using CalmSpire.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using CalmSpire.Data;
+using CalmSpire.Models;
+using CalmSpire.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace CalmSpire.Controllers
 {
     public class ChatController : Controller
     {
-        private readonly ChatService _chatService;
+        private readonly CalmSpireDbContext _db;
+        private readonly AIChatService _ai;
 
-        public ChatController(ChatService chatService)
+        public ChatController(CalmSpireDbContext db, AIChatService ai)
         {
-            _chatService = chatService;
+            _db = db;
+            _ai = ai;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult Index()
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            var uid = HttpContext.Session.GetInt32("UserId");
+            if (!uid.HasValue) return RedirectToAction("Login", "Account");
 
-            var chatHistory = await _chatService.GetChatHistoryAsync(userId.Value);
-            return View(chatHistory);
+            var history = _db.ChatMessages
+                .Where(c => c.UserId == uid.Value)
+                .OrderBy(c => c.CreatedAt)
+                .Take(200)
+                .ToList();
+
+            return View(history);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendMessage([FromBody] ChatRequest request)
+        public async Task<IActionResult> SendMessage([FromBody] ChatMessage input)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
+            var uid = HttpContext.Session.GetInt32("UserId");
+            if (!uid.HasValue) return Unauthorized();
+
+            if (input == null || string.IsNullOrWhiteSpace(input.Message))
+                return BadRequest("Empty message");
+
+            // save user message
+            var userMessage = new ChatMessage
             {
-                return Unauthorized();
-            }
+                UserId = uid.Value,
+                Sender = "user",
+                Message = input.Message,
+                CreatedAt = DateTime.UtcNow
+            };
+            _db.ChatMessages.Add(userMessage);
+            await _db.SaveChangesAsync();
 
-            if (string.IsNullOrWhiteSpace(request.Message))
+            // get reply from AI service
+            var aiReply = await _ai.GetAIResponseAsync(input.Message);
+
+            var botMessage = new ChatMessage
             {
-                return BadRequest("Message cannot be empty");
-            }
+                UserId = uid.Value,
+                Sender = "bot",
+                Message = aiReply,
+                CreatedAt = DateTime.UtcNow
+            };
+            _db.ChatMessages.Add(botMessage);
+            await _db.SaveChangesAsync();
 
-            var response = await _chatService.GetResponseAsync(request.Message);
-            var chatMessage = await _chatService.SaveChatMessageAsync(userId.Value, request.Message, response);
-
-            return Json(new
-            {
-                id = chatMessage.Id,
-                message = chatMessage.Message,
-                response = chatMessage.Response,
-                createdAt = chatMessage.CreatedAt
-            });
-        }
-
-        public class ChatRequest
-        {
-            public string Message { get; set; } = string.Empty;
+            return Json(new { bot = aiReply });
         }
     }
 }

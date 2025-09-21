@@ -1,0 +1,23 @@
+﻿@model IEnumerable<CalmSpire.Models.Assessment>
+@{
+    ViewData["Title"] = "Assessments";
+}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Available Assessments</h2>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text text-muted">@item.Description</p>
+                        <a class="btn btn-primary" href="@Url.Action("Start", "Assessment", new { id = item.Id })">
+                            Start Assessment
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

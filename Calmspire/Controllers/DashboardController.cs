@@ -1,64 +1,46 @@
-﻿using CalmSpire.Data;
-using CalmSpire.Models.ViewModels;
+﻿using CalmSpire.Services;
+using CalmSpire.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CalmSpire.Controllers
 {
     public class DashboardController : Controller
     {
-        private readonly CalmSpireDbContext _context;
+        private readonly SuggestionEngineService _suggestionEngine;
+        private readonly CalmSpireDbContext _db;
 
-        public DashboardController(CalmSpireDbContext context)
+        public DashboardController(SuggestionEngineService suggestionEngine, CalmSpireDbContext db)
         {
-            _context = context;
+            _suggestionEngine = suggestionEngine;
+            _db = db;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            int userId = 1; // TODO: get from logged-in user session
 
-            var userName = HttpContext.Session.GetString("UserName") ?? "User";
+            var suggestion = await _suggestionEngine.GetSuggestionForUserAsync(userId);
+            var moods = _db.MoodEntries
+                           .Where(m => m.UserId == userId)
+                           .OrderByDescending(m => m.EntryDate)
+                           .Take(7)
+                           .ToList();
 
-            // Get mood entries for the last 7 days
-            var sevenDaysAgo = DateTime.Today.AddDays(-6);
-            var recentMoods = await _context.MoodEntries
-                .Where(m => m.UserId == userId && m.EntryDate >= sevenDaysAgo)
-                .OrderBy(m => m.EntryDate)
-                .ToListAsync();
+            var gratitudeCount = _db.GratitudeEntries.Count(g => g.UserId == userId);
+            var journals = _db.JournalEntries
+                              .Where(j => j.UserId == userId)
+                              .OrderByDescending(j => j.CreatedAt)
+                              .Take(3)
+                              .ToList();
 
-            // Get statistics
-            var totalJournalEntries = await _context.JournalEntries
-                .CountAsync(j => j.UserId == userId);
+            ViewBag.Suggestion = suggestion;
+            ViewBag.Moods = moods;
+            ViewBag.GratitudeCount = gratitudeCount;
+            ViewBag.Journals = journals;
 
-            var assessmentsCompleted = await _context.AssessmentResults
-                .CountAsync(ar => ar.UserId == userId);
-
-            var lastMoodEntry = await _context.MoodEntries
-                .Where(m => m.UserId == userId)
-                .OrderByDescending(m => m.EntryDate)
-                .Select(m => m.EntryDate)
-                .FirstOrDefaultAsync();
-
-            var averageMoodThisWeek = recentMoods.Any()
-                ? recentMoods.Average(m => m.MoodScore)
-                : (double?)null;
-
-            var viewModel = new DashboardViewModel
-            {
-                UserName = userName,
-                RecentMoods = recentMoods,
-                TotalJournalEntries = totalJournalEntries,
-                AssessmentsCompleted = assessmentsCompleted,
-                LastMoodEntry = lastMoodEntry,
-                AverageMoodThisWeek = averageMoodThisWeek
-            };
-
-            return View(viewModel);
+            return View();
         }
     }
 }

@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services
 builder.Services.AddControllersWithViews();
 
-// Configure Entity Framework
+// EF Core
 builder.Services.AddDbContext<CalmSpireDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add session support
+// Sessions
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(2);
@@ -19,13 +19,14 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Add custom services
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<SuggestionEngineService>();
 builder.Services.AddScoped<AuthenticationService>();
-builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<AIChatService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Error handling
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -34,7 +35,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 app.UseSession();
 
@@ -42,16 +42,15 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Ensure database is created (no migrations, just check existence)
+// Ensure DB exists & seed
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<CalmSpireDbContext>();
-    context.Database.EnsureCreated();   // ✅ This will only create DB if missing
+    var ctx = scope.ServiceProvider.GetRequiredService<CalmSpireDbContext>();
+    ctx.Database.EnsureCreated();
 
-    // Seed initial assessments if none exist
-    if (!context.Assessments.Any())
+    if (!ctx.Assessments.Any())
     {
-        var stressAssessment = new CalmSpire.Models.Assessment
+        var stress = new CalmSpire.Models.Assessment
         {
             Title = "Stress Level Assessment",
             Description = "A quick assessment to evaluate your current stress levels and coping strategies.",
@@ -67,7 +66,7 @@ using (var scope = app.Services.CreateScope())
             CreatedAt = DateTime.UtcNow
         };
 
-        var moodAssessment = new CalmSpire.Models.Assessment
+        var mood = new CalmSpire.Models.Assessment
         {
             Title = "Mood Check-In",
             Description = "A brief assessment to understand your current emotional state and mood patterns.",
@@ -83,8 +82,8 @@ using (var scope = app.Services.CreateScope())
             CreatedAt = DateTime.UtcNow
         };
 
-        context.Assessments.AddRange(stressAssessment, moodAssessment);
-        context.SaveChanges();
+        ctx.Assessments.AddRange(stress, mood);
+        ctx.SaveChanges();
     }
 }
 

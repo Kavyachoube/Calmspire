@@ -1,133 +1,75 @@
 ﻿@{
-    ViewData["Title"] = "Welcome to Your Mental Wellness Journey";
+    ViewData["Title"] = "CalmSpire - Home";
 }
 
-<div class="hero-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <!-- Left: Content -->
-            <div class="col-lg-6">
-                <div class="hero-content">
-                    <h1>
-                        Your Journey to <span class="text-accent">Mental Wellness</span> Starts Here
-                    </h1>
-                    <p>
-                        Track your mood, reflect through journaling, access meditation resources,
-                        and get AI-powered support—all in one peaceful, private space.
-                    </p>
-                    <div class="hero-buttons">
-                        <a href="@Url.Action("Register", "Account")" class="btn btn-primary me-3">
-                            Start Your Journey
-                        </a>
-                        <a href="@Url.Action("Features", "Home")" class="btn btn-outline-light">
-                            Learn More
-                        </a>
-                    </div>
-                    <div class="hero-stats row text-center mt-5">
-                        <div class="col-4">
-                            <div class="stat-item">
-                                <i class="fas fa-heart"></i>
-                                <div class="stat-label">Mood Tracking</div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="stat-item">
-                                <i class="fas fa-book"></i>
-                                <div class="stat-label">Private Journal</div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="stat-item">
-                                <i class="fas fa-robot"></i>
-                                <div class="stat-label">AI Support</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Navbar -->
 
-            <!-- Right: Image -->
-            <div class="col-lg-6 text-center">
-                <img src="https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg?auto=compress&cs=tinysrgb&w=800"
-                     alt="Meditation" class="img-fluid rounded shadow-lg hero-img" />
+
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container">
+        <div class="hero-content">
+            <h1>Welcome to <span>CalmSpire</span></h1>
+            <p>Your personal space for mindfulness, mood tracking, AI chat, and emotional well-being.</p>
+
+            <div class="hero-buttons mt-4">
+                <a href="/Account/Register" class="btn btn-light me-2">Get Started</a>
+                <a href="/Account/Login" class="btn btn-outline-light">Login</a>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Features -->
+<!-- Features Section -->
 <section class="features-preview">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="section-title">Everything You Need for Mental Wellness</h2>
-            <p class="section-subtitle">
-                CalmSpire provides tools to support your mental health journey —
-                from daily mood tracking to AI-powered support.
-            </p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                    <h4>Mood Tracking</h4>
-                    <p>Log emotions and visualize patterns with charts to understand trends.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-journal-whills"></i></div>
-                    <h4>Private Journaling</h4>
-                    <p>Express thoughts in a secure private journal with unlimited entries.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-spa"></i></div>
-                    <h4>Meditation Resources</h4>
-                    <p>Curated videos and mindfulness exercises for inner peace.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
-                    <h4>Self-Assessments</h4>
-                    <p>Validated assessments to track and understand your progress.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
-                    <h4>AI Support Chat</h4>
-                    <p>24/7 empathetic AI assistant for mental health guidance.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-heart"></i></div>
-                    <h4>Gratitude Practice</h4>
-                    <p>Daily gratitude journaling to cultivate positivity.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section">
     <div class="container text-center">
-        <h2 class="cta-title">Ready to Begin Your Wellness Journey?</h2>
-        <p class="cta-subtitle">
-            Join thousands of users who have found peace and clarity with CalmSpire.
-        </p>
-        <a href="@Url.Action("Register", "Account")" class="btn btn-light btn-lg">
-            Get Started Free
-        </a>
-        <p class="mt-3 small"><i class="fas fa-lock"></i> Your privacy is our priority.</p>
+        <h2 class="section-title">Why Choose CalmSpire?</h2>
+        <p class="section-subtitle">Smart tools designed to help you grow emotionally and mentally.</p>
+
+        <div class="row mt-5">
+            <div class="col-md-3 mb-4">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="fas fa-smile"></i></div>
+                    <h4>Mood Tracking</h4>
+                    <p>Log your daily moods and discover long-term patterns for self-awareness.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="fas fa-book"></i></div>
+                    <h4>Daily Journal</h4>
+                    <p>Write and reflect daily, build gratitude habits, and boost positivity.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+                    <h4>Assessments</h4>
+                    <p>Take guided self-assessments for stress, anxiety, and personal growth.</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                    <h4>AI Chat</h4>
+                    <p>Talk with our AI-powered assistant for instant support and guidance anytime.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- CTA Section -->
+<section class="cta-section text-center">
+    <div class="container">
+        <h2 class="cta-title">Start Your Wellness Journey Today</h2>
+        <p class="cta-subtitle">Join CalmSpire and unlock all features including Mood Tracking, Journaling, and AI Chat.</p>
+        <a href="/Account/Register" class="btn btn-light">Get Started Free</a>
+    </div>
+</section>
+
+<!-- Footer -->
+

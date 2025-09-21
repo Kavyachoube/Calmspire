@@ -1,19 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CalmSpire.Models
 {
     public class ChatMessage
     {
+        [Key]
         public int Id { get; set; }
 
+        // Foreign key to User
         public int UserId { get; set; }
-        public User User { get; set; } = null!;
+
+        [ForeignKey(nameof(UserId))]
+        public User User { get; set; }   // ✅ navigation property
 
         [Required]
-        public string Message { get; set; } = string.Empty;
+        [MaxLength(20)]
+        public string Sender { get; set; } = "user"; // "user" or "bot"
 
         [Required]
-        public string Response { get; set; } = string.Empty;
+        public string Message { get; set; } = "";
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

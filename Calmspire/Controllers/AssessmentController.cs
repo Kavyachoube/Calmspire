@@ -1,134 +1,118 @@
-﻿using Calmspire.Models;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using CalmSpire.Data;
 using CalmSpire.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using CalmSpire.Models.ViewModels;
 
 namespace CalmSpire.Controllers
 {
     public class AssessmentController : Controller
     {
-        private readonly CalmSpireDbContext _context;
+        private readonly CalmSpireDbContext _db;
+        public AssessmentController(CalmSpireDbContext db) { _db = db; }
 
-        public AssessmentController(CalmSpireDbContext context)
+        // List available assessments
+        public IActionResult Index()
         {
-            _context = context;
+            var items = _db.Assessments.Where(a => a.IsActive).OrderBy(a => a.Title).ToList();
+            return View(items);
         }
 
-        public async Task<IActionResult> Index()
+        // Start page
+        public IActionResult Start(int id)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var assessments = await _context.Assessments
-                .Where(a => a.IsActive)
-                .ToListAsync();
-
-            return View(assessments);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Take(int id)
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var assessment = await _context.Assessments.FindAsync(id);
-            if (assessment == null || !assessment.IsActive)
-            {
-                return NotFound();
-            }
-
+            var assessment = _db.Assessments.Find(id);
+            if (assessment == null) return NotFound();
             return View(assessment);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Submit(int id, Dictionary<string, string> responses)
+        // Render questions page
+        public IActionResult Questions(int id)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
+            var assessment = _db.Assessments.Find(id);
+            if (assessment == null) return NotFound();
+
+            var questions = JsonSerializer.Deserialize<List<QuestionDto>>(assessment.QuestionsJson) ?? new();
+            var vm = new AssessmentTakeViewModel
             {
-                return RedirectToAction("Login", "Account");
+                AssessmentId = assessment.Id,
+                Title = assessment.Title,
+                Description = assessment.Description,
+                Questions = questions
+            };
+
+            return View(vm);
+        }
+
+        // Handle submission
+        [HttpPost]
+        public IActionResult Submit()
+        {
+            // We will read assessment id from form
+            if (!int.TryParse(Request.Form["AssessmentId"], out var assessmentId))
+                return BadRequest("Missing assessment id");
+
+            var assessment = _db.Assessments.Find(assessmentId);
+            if (assessment == null) return NotFound();
+
+            var questions = JsonSerializer.Deserialize<List<QuestionDto>>(assessment.QuestionsJson) ?? new();
+            var responses = new List<object>();
+            int totalScore = 0;
+
+            for (int i = 0; i < questions.Count; i++)
+            {
+                var key = $"q_{i}";
+                var answer = Request.Form[key].FirstOrDefault() ?? "";
+                responses.Add(new { Question = questions[i].Question, Answer = answer });
+
+                if (questions[i].Options != null && questions[i].Options.Count > 0)
+                {
+                    var idx = questions[i].Options.IndexOf(answer);
+                    if (idx >= 0) totalScore += (idx + 1);
+                }
             }
 
-            var assessment = await _context.Assessments.FindAsync(id);
-            if (assessment == null || !assessment.IsActive)
+            var interpretation = totalScore switch
             {
-                return NotFound();
-            }
-
-            var responsesJson = JsonConvert.SerializeObject(responses);
-
-            // Simple scoring logic - count positive responses
-            var score = responses.Values.Count(r => r.Contains("yes") || r.Contains("often") || r.Contains("always"));
-
-            var interpretation = score switch
-            {
-                <= 2 => "Low concern - You seem to be managing well.",
-                <= 5 => "Moderate concern - Consider implementing some stress management techniques.",
-                _ => "Higher concern - Consider speaking with a mental health professional."
+                >= 20 => "High — consider professional support if you feel overwhelmed.",
+                >= 10 => "Moderate — try daily coping strategies and check in with friends/family.",
+                _ => "Low — you're doing well; continue positive habits."
             };
 
             var result = new AssessmentResult
             {
-                UserId = userId.Value,
-                AssessmentId = id,
-                ResponsesJson = responsesJson,
-                Score = score,
+                UserId = HttpContext.Session.GetInt32("UserId") ?? 0,
+                AssessmentId = assessment.Id,
+                ResponsesJson = JsonSerializer.Serialize(responses),
+                Score = totalScore,
                 Interpretation = interpretation,
                 CompletedAt = DateTime.UtcNow
             };
 
-            _context.AssessmentResults.Add(result);
-            await _context.SaveChangesAsync();
+            _db.AssessmentResults.Add(result);
+            _db.SaveChanges();
 
             return RedirectToAction("Result", new { id = result.Id });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Result(int id)
+        // show result + recent history for this assessment & user
+        public IActionResult Result(int id)
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            var res = _db.AssessmentResults.Find(id);
+            if (res == null) return NotFound();
 
-            var result = await _context.AssessmentResults
-                .Include(ar => ar.Assessment)
-                .FirstOrDefaultAsync(ar => ar.Id == id && ar.UserId == userId);
+            var uid = HttpContext.Session.GetInt32("UserId") ?? 0;
+            var history = _db.AssessmentResults
+                .Where(r => r.UserId == uid && r.AssessmentId == res.AssessmentId)
+                .OrderByDescending(r => r.CompletedAt)
+                .Take(5)
+                .ToList();
 
-            if (result == null)
-            {
-                return NotFound();
-            }
+            ViewBag.History = history;
+            // load assessment title for display
+            res.Assessment = _db.Assessments.Find(res.AssessmentId)!;
 
-            return View(result);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> History()
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var results = await _context.AssessmentResults
-                .Include(ar => ar.Assessment)
-                .Where(ar => ar.UserId == userId)
-                .OrderByDescending(ar => ar.CompletedAt)
-                .ToListAsync();
-
-            return View(results);
+            return View(res);
         }
     }
 }

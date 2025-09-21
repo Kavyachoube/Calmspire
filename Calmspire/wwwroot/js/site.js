@@ -281,3 +281,4 @@ const CalmSpire = {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CalmSpire;
 }
+// Floating Chat Bubble Logic
