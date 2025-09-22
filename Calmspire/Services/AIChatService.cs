@@ -12,7 +12,7 @@ namespace CalmSpire.Services
         public AIChatService(HttpClient http, IConfiguration config)
         {
             _http = http;
-            _apiKey = config["GEMINI_API_KEY"];
+            _apiKey = config["AIzaSyD5OjQPorklHttVObVVGnd4ydbMAjhb6EY"];
         }
 
         // Public method used by controller to get reply
