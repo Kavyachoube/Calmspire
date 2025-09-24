@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Meditation";
+}
+
+<div class="container mt-4 text-center">
+    <h2 class="mb-4">🧘 Guided Meditation</h2>
+    <p class="lead">Take a moment to relax and follow these guided meditation audios.</p>
+
+    <div class="row g-4 mt-3">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5>5 Minute Relaxation</h5>
+                    <audio controls class="w-100 mt-2">
+                        <source src="/meditations/relaxation.mp3" type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5>10 Minute Breathing</h5>
+                    <audio controls class="w-100 mt-2">
+                        <source src="/meditations/breathing.mp3" type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5>Mindfulness Session</h5>
+                    <audio controls class="w-100 mt-2">
+                        <source src="/meditations/mindfulness.mp3" type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,7 +1,26 @@
-﻿
+﻿@model IEnumerable<CalmSpire.Models.Article>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Mental Health Articles";
 }
 
-<h1>Index</h1>
-
+<div class="container mt-4">
+    <h2 class="mb-4">📰 Mental Health Articles</h2>
+    <div class="row g-4">
+        @foreach (var article in Model)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    @if (!string.IsNullOrEmpty(article.UrlToImage))
+                    {
+                        <img src="@article.UrlToImage" class="card-img-top" style="height:200px;object-fit:cover;" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@article.Title</h5>
+                        <p class="card-text">@article.Description</p>
+                        <a href="@article.Url" target="_blank" class="btn btn-outline-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

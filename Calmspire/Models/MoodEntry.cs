@@ -1,21 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CalmSpire.Models
 {
     public class MoodEntry
     {
         public int Id { get; set; }
-
-        public int UserId { get; set; }
-        public User User { get; set; } = null!;
-
-        [Range(1, 10)]
-        public int MoodScore { get; set; }
-
-        [StringLength(500)]
+        [Required] public int UserId { get; set; }
+        [Range(1, 10)] public int MoodScore { get; set; }
         public string? Notes { get; set; }
-
-        public DateTime EntryDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public User? User { get; set; }
     }
 }

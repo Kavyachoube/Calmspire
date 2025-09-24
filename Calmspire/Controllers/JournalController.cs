@@ -1,169 +1,21 @@
-﻿using CalmSpire.Data;
-using CalmSpire.Models;
+﻿using CalmSpire.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CalmSpire.Controllers
 {
     public class JournalController : Controller
     {
-        private readonly CalmSpireDbContext _context;
+        private readonly NewsApiService _newsApi;
 
-        public JournalController(CalmSpireDbContext context)
+        public JournalController(NewsApiService newsApi)
         {
-            _context = context;
+            _newsApi = newsApi;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var journalEntries = await _context.JournalEntries
-                .Where(j => j.UserId == userId)
-                .OrderByDescending(j => j.CreatedAt)
-                .ToListAsync();
-
-            return View(journalEntries);
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            return View(new JournalEntry());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create(JournalEntry model)
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            model.UserId = userId.Value;
-            model.CreatedAt = DateTime.UtcNow;
-            model.UpdatedAt = DateTime.UtcNow;
-
-            _context.JournalEntries.Add(model);
-            await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "Journal entry created successfully!";
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Details(int id)
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var journalEntry = await _context.JournalEntries
-                .FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
-
-            if (journalEntry == null)
-            {
-                return NotFound();
-            }
-
-            return View(journalEntry);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var journalEntry = await _context.JournalEntries
-                .FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
-
-            if (journalEntry == null)
-            {
-                return NotFound();
-            }
-
-            return View(journalEntry);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, JournalEntry model)
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            if (id != model.Id)
-            {
-                return NotFound();
-            }
-
-            var existingEntry = await _context.JournalEntries
-                .FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
-
-            if (existingEntry == null)
-            {
-                return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            existingEntry.Title = model.Title;
-            existingEntry.Content = model.Content;
-            existingEntry.UpdatedAt = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "Journal entry updated successfully!";
-            return RedirectToAction("Details", new { id = id });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (!userId.HasValue)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var journalEntry = await _context.JournalEntries
-                .FirstOrDefaultAsync(j => j.Id == id && j.UserId == userId);
-
-            if (journalEntry != null)
-            {
-                _context.JournalEntries.Remove(journalEntry);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Journal entry deleted successfully!";
-            }
-
-            return RedirectToAction("Index");
+            var articles = await _newsApi.GetMentalHealthArticlesAsync();
+            return View(articles);
         }
     }
 }

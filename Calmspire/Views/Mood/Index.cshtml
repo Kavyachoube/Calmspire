@@ -1,5 +1,63 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IEnumerable<CalmSpire.Models.MoodEntry>
 @{
+    ViewData["Title"] = "Mood Tracker";
+    var moods = Model.OrderBy(m => m.CreatedAt).ToList();
+    var labels = moods.Select(m => m.CreatedAt.ToLocalTime().ToString("MM-dd")).ToArray();
+    var values = moods.Select(m => m.MoodScore).ToArray();
+}
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">📊 Mood Tracker</h2>
+
+    <a asp-action="Create" class="btn btn-primary mb-3">+ Log New Mood</a>
+
+    <canvas id="moodChart" height="120"></canvas>
+
+    <div class="mt-4">
+        <h4>Recent Entries</h4>
+        <ul class="list-group">
+            @foreach (var m in Model)
+            {
+                <li class="list-group-item">
+                    <strong>@m.CreatedAt.ToLocalTime().ToString("g"):</strong>
+                    Score = @m.MoodScore | Notes: @m.Notes
+                    <a asp-action="Edit" asp-route-id="@m.Id" class="btn btn-sm btn-outline-secondary float-end">Edit</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('moodChart').getContext('2d');
+        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(labels));
+        const values = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(values));
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Mood Score (1–10)',
+                    data: values,
+                    fill: false,
+                    borderColor: 'blue',
+                    tension: 0.2,
+                    pointRadius: 5,
+                    pointBackgroundColor: 'blue'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 10,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+    </script>
 }

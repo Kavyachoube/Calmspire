@@ -352,4 +352,59 @@ h2, h3 {
         background: #7f8c8d;
     }
 
+/* ---------------- Navbar ---------------- */
+/* Navbar gradient background */
+.custom-navbar {
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    padding: 0.75rem 1rem;
+}
 
+    /* Navbar brand */
+    .custom-navbar .navbar-brand {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff !important;
+    }
+
+    /* Navbar links */
+    .custom-navbar .nav-link {
+        color: #fff !important;
+        font-weight: 500;
+        margin: 0 0.4rem;
+        position: relative;
+        transition: all 0.2s ease-in-out;
+    }
+
+        /* Hover underline animation */
+        .custom-navbar .nav-link::after {
+            content: "";
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            background-color: #fff;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .custom-navbar .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+    /* Dropdown menu */
+    .custom-navbar .dropdown-menu {
+        border-radius: 0.5rem;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+/* Main content spacing */
+.main-content {
+    padding-top: 6rem; /* navbar ke neeche content adjust */
+}
+
+/* Footer */
+.footer {
+    font-size: 0.9rem;
+}

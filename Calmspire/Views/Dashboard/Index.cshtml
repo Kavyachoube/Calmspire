@@ -1,84 +1,60 @@
 ﻿@{
     ViewData["Title"] = "Dashboard";
-    var moods = ViewBag.Moods as List<CalmSpire.Models.MoodEntry>;
-    var journals = ViewBag.Journals as List<CalmSpire.Models.JournalEntry>;
 }
 
-<div class="container py-5">
-    <h2 class="mb-4 text-center">🌿 Welcome to Your Wellness Dashboard</h2>
+<div class="container mt-4">
+    <h2 class="mb-4">Welcome back 👋</h2>
+    <p class="lead">Here’s a quick overview of your Calmspire journey.</p>
 
-    <!-- Daily Suggestion -->
-    <div class="card shadow p-4 mb-4" style="background:linear-gradient(135deg,#f0f9ff,#e0f2fe); border-radius:20px;">
-        <h4>✨ Your Daily Suggestion</h4>
-        <p style="font-size:1.2rem; line-height:1.6;">@ViewBag.Suggestion</p>
-    </div>
+    <div class="row g-4 mt-3">
 
-    <div class="row g-4">
-        <!-- Mood Tracker -->
-        <div class="col-md-6">
-            <div class="card shadow p-4 h-100">
-                <h5 class="mb-3">📊 Your Mood (Last 7 Days)</h5>
-                <canvas id="moodChart" height="200"></canvas>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <h5>Mood Tracker</h5>
+                <p>Track your emotions daily.</p>
+                <a href="/Mood" class="btn btn-outline-primary">Go</a>
             </div>
         </div>
 
-        <!-- Gratitude -->
-        <div class="col-md-6">
-            <div class="card shadow p-4 h-100 text-center">
-                <h5 class="mb-3">🙏 Gratitude Streak</h5>
-                <p class="display-6">@ViewBag.GratitudeCount entries</p>
-                <p>Keep writing small joys daily 🌸</p>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <h5>Gratitude Journal</h5>
+                <p>Write what you’re grateful for.</p>
+                <a href="/GratitudeEntry" class="btn btn-outline-success">Go</a>
             </div>
         </div>
-    </div>
 
-    <!-- Journals -->
-    <div class="card shadow p-4 my-4">
-        <h5 class="mb-3">📖 Your Recent Journals</h5>
-        <div class="list-group">
-            @if (journals != null && journals.Any())
-            {
-                foreach (var j in journals)
-                {
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <h6 class="mb-1">@j.Title</h6>
-                        <small>@j.CreatedAt.ToString("MMM dd, yyyy")</small>
-                        <p class="mb-1">@j.Content.Substring(0, Math.Min(100, j.Content.Length))...</p>
-                    </a>
-                }
-            }
-            else
-            {
-                <p>No journals yet. Start writing your thoughts today ✍️</p>
-            }
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <h5>Meditation</h5>
+                <p>Relax with guided audios.</p>
+                <a href="/Meditation" class="btn btn-outline-info">Go</a>
+            </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <h5>Articles & Stories</h5>
+                <p>Read about mental wellness.</p>
+                <a href="/Journal" class="btn btn-outline-warning">Go</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <h5>Assessments</h5>
+                <p>Check your mental health insights.</p>
+                <a href="/Assessment" class="btn btn-outline-dark">Go</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <h5>Chat Support</h5>
+                <p>Talk with our AI/chatbot.</p>
+                <a href="/Chat" class="btn btn-outline-secondary">Go</a>
+            </div>
+        </div>
+
     </div>
 </div>
-
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('moodChart').getContext('2d');
-        const data = {
-            labels: [
-        @foreach (var m in moods)
-        {
-            @: "@m.EntryDate.ToString("dd MMM")",
-        }
-                    ],
-            datasets: [{
-                label: 'Mood Score',
-                data: [
-        @foreach (var m in moods)
-        {
-            @: @m.MoodScore,
-        }
-                        ],
-                fill: false,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.3
-            }]
-        };
-        new Chart(ctx, { type: 'line', data: data });
-    </script>
-}

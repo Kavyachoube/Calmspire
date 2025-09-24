@@ -1,46 +1,30 @@
-﻿using CalmSpire.Services;
+﻿using Microsoft.AspNetCore.Mvc;
 using CalmSpire.Data;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
+using CalmSpire.Models.ViewModels;
 
 namespace CalmSpire.Controllers
 {
     public class DashboardController : Controller
     {
-        private readonly SuggestionEngineService _suggestionEngine;
         private readonly CalmSpireDbContext _db;
+        public DashboardController(CalmSpireDbContext db) { _db = db; }
 
-        public DashboardController(SuggestionEngineService suggestionEngine, CalmSpireDbContext db)
+        public IActionResult Index()
         {
-            _suggestionEngine = suggestionEngine;
-            _db = db;
-        }
+            var uid = HttpContext.Session.GetInt32("UserId");
+            if (!uid.HasValue) return RedirectToAction("Login", "Account");
 
-        public async Task<IActionResult> Index()
-        {
-            int userId = 1; // TODO: get from logged-in user session
+            var vm = new DashboardViewModel
+            {
+                UserName = HttpContext.Session.GetString("UserName") ?? "User",
+                RecentMoods = _db.MoodEntries.Where(m => m.UserId == uid).OrderByDescending(m => m.CreatedAt).Take(5).ToList(),
+                TotalJournalEntries = _db.JournalEntries.Count(j => j.UserId == uid),
+                AssessmentsCompleted = _db.AssessmentResults.Count(r => r.UserId == uid),
+                LastMoodEntry = _db.MoodEntries.Where(m => m.UserId == uid).OrderByDescending(m => m.CreatedAt).Select(m => (DateTime?)m.CreatedAt).FirstOrDefault(),
+                AverageMoodThisWeek = _db.MoodEntries.Where(m => m.UserId == uid && m.CreatedAt >= DateTime.UtcNow.AddDays(-7)).Select(m => (double?)m.MoodScore).Average()
+            };
 
-            var suggestion = await _suggestionEngine.GetSuggestionForUserAsync(userId);
-            var moods = _db.MoodEntries
-                           .Where(m => m.UserId == userId)
-                           .OrderByDescending(m => m.EntryDate)
-                           .Take(7)
-                           .ToList();
-
-            var gratitudeCount = _db.GratitudeEntries.Count(g => g.UserId == userId);
-            var journals = _db.JournalEntries
-                              .Where(j => j.UserId == userId)
-                              .OrderByDescending(j => j.CreatedAt)
-                              .Take(3)
-                              .ToList();
-
-            ViewBag.Suggestion = suggestion;
-            ViewBag.Moods = moods;
-            ViewBag.GratitudeCount = gratitudeCount;
-            ViewBag.Journals = journals;
-
-            return View();
+            return View(vm);
         }
     }
 }

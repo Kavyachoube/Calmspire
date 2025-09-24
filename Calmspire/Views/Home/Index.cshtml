@@ -1,75 +1,98 @@
 ﻿@{
-    ViewData["Title"] = "CalmSpire - Home";
+    ViewData["Title"] = "Welcome - CalmSpire";
 }
 
-<!-- Navbar -->
-
-
-<!-- Hero Section -->
-<section class="hero-section text-center">
-    <div class="container">
-        <div class="hero-content">
-            <h1>Welcome to <span>CalmSpire</span></h1>
-            <p>Your personal space for mindfulness, mood tracking, AI chat, and emotional well-being.</p>
-
-            <div class="hero-buttons mt-4">
-                <a href="/Account/Register" class="btn btn-light me-2">Get Started</a>
-                <a href="/Account/Login" class="btn btn-outline-light">Login</a>
-            </div>
-        </div>
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Welcome to <span style="color:#007bff;">CalmSpire</span></h1>
+        <p class="lead">Track mood, write journals, practice gratitude, meditate, chat with AI, and take assessments.</p>
     </div>
-</section>
 
-<!-- Features Section -->
-<section class="features-preview">
-    <div class="container text-center">
-        <h2 class="section-title">Why Choose CalmSpire?</h2>
-        <p class="section-subtitle">Smart tools designed to help you grow emotionally and mentally.</p>
+    <div class="row g-4">
 
-        <div class="row mt-5">
-            <div class="col-md-3 mb-4">
-                <div class="feature-card h-100">
-                    <div class="feature-icon"><i class="fas fa-smile"></i></div>
-                    <h4>Mood Tracking</h4>
-                    <p>Log your daily moods and discover long-term patterns for self-awareness.</p>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-4">
-                <div class="feature-card h-100">
-                    <div class="feature-icon"><i class="fas fa-book"></i></div>
-                    <h4>Daily Journal</h4>
-                    <p>Write and reflect daily, build gratitude habits, and boost positivity.</p>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-4">
-                <div class="feature-card h-100">
-                    <div class="feature-icon"><i class="fas fa-tasks"></i></div>
-                    <h4>Assessments</h4>
-                    <p>Take guided self-assessments for stress, anxiety, and personal growth.</p>
-                </div>
-            </div>
-
-            <div class="col-md-3 mb-4">
-                <div class="feature-card h-100">
-                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
-                    <h4>AI Chat</h4>
-                    <p>Talk with our AI-powered assistant for instant support and guidance anytime.</p>
+        <!-- Mood Tracker -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="fs-1">😊</span>
+                    </div>
+                    <h4 class="card-title">Mood Tracking</h4>
+                    <p class="card-text">Track daily emotions and view patterns.</p>
+                    <a href="/Mood" class="btn btn-primary">Log Mood</a>
                 </div>
             </div>
         </div>
+
+        <!-- Gratitude -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="fs-1">🙏</span>
+                    </div>
+                    <h4 class="card-title">Gratitude</h4>
+                    <p class="card-text">Write your gratitude notes and reflections.</p>
+                    <a href="/GratitudeEntry" class="btn btn-success">Open Gratitude</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journaling (Articles/Stories) -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="fs-1">📖</span>
+                    </div>
+                    <h4 class="card-title">Journaling</h4>
+                    <p class="card-text">Read blogs, stories, and articles for growth.</p>
+                    <a href="/Journal" class="btn btn-info text-white">Explore Articles</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meditation -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="fs-1">🧘</span>
+                    </div>
+                    <h4 class="card-title">Meditation</h4>
+                    <p class="card-text">Relax with guided meditations and breathing.</p>
+                    <a href="/Meditation" class="btn btn-warning text-dark">Start Meditation</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessments -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="fs-1">📝</span>
+                    </div>
+                    <h4 class="card-title">Assessments</h4>
+                    <p class="card-text">Take self-assessments to check your progress.</p>
+                    <a href="/Assessment" class="btn btn-primary">Take Assessment</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 text-center p-3">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <span class="fs-1">💬</span>
+                    </div>
+                    <h4 class="card-title">Chat</h4>
+                    <p class="card-text">Talk with AI assistant and get guidance.</p>
+                    <a href="/Chat" class="btn btn-secondary">Open Chat</a>
+                </div>
+            </div>
+        </div>
+
     </div>
-</section>
-
-<!-- CTA Section -->
-<section class="cta-section text-center">
-    <div class="container">
-        <h2 class="cta-title">Start Your Wellness Journey Today</h2>
-        <p class="cta-subtitle">Join CalmSpire and unlock all features including Mood Tracking, Journaling, and AI Chat.</p>
-        <a href="/Account/Register" class="btn btn-light">Get Started Free</a>
-    </div>
-</section>
-
-<!-- Footer -->
-
+</div>

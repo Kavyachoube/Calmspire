@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CalmSpire.Models
 {
@@ -6,14 +7,16 @@ namespace CalmSpire.Models
     {
         public int Id { get; set; }
 
-        public int UserId { get; set; }
-        public User User { get; set; } = null!;
-
         [Required]
-        [StringLength(500)]
-        public string Content { get; set; } = string.Empty;
+        public int UserId { get; set; }
 
-        public DateTime EntryDate { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required(ErrorMessage = "Please write something you are grateful for.")]
+        [StringLength(500)]
+        public string Content { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        // Navigation
+        public User? User { get; set; }
     }
 }

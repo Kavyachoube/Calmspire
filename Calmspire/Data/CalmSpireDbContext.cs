@@ -30,7 +30,7 @@ namespace CalmSpire.Data
             {
                 e.HasKey(x => x.Id);
                 e.HasOne(x => x.User).WithMany(u => u.MoodEntries).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
-                e.HasIndex(x => new { x.UserId, x.EntryDate }).IsUnique();
+                e.HasIndex(x => new { x.UserId, x.CreatedAt });
             });
 
             // JournalEntries
