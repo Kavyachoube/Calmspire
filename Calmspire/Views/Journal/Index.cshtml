@@ -1,26 +1,48 @@
-﻿@model IEnumerable<CalmSpire.Models.Article>
-@{
-    ViewData["Title"] = "Mental Health Articles";
-}
+﻿@model CalmSpire.Models.ViewModels.JournalIndexViewModel
 
-<div class="container mt-4">
-    <h2 class="mb-4">📰 Mental Health Articles</h2>
-    <div class="row g-4">
-        @foreach (var article in Model)
+<h2>Mental Health Articles & Your Journal</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <h4>Articles</h4>
+        @if (!Model.Articles.Any())
         {
-            <div class="col-md-4">
-                <div class="card h-100 shadow-sm">
-                    @if (!string.IsNullOrEmpty(article.UrlToImage))
-                    {
-                        <img src="@article.UrlToImage" class="card-img-top" style="height:200px;object-fit:cover;" />
-                    }
+            <p class="text-muted">No articles available right now.</p>
+        }
+        else
+        {
+            foreach (var a in Model.Articles)
+            {
+                <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">@article.Title</h5>
-                        <p class="card-text">@article.Description</p>
-                        <a href="@article.Url" target="_blank" class="btn btn-outline-primary btn-sm">Read More</a>
+                        <h5>@a.Title</h5>
+                        <p>@a.Description</p>
+                        <a class="btn btn-sm btn-outline-primary" href="@a.Url" target="_blank">Read more</a>
                     </div>
                 </div>
-            </div>
+            }
+        }
+    </div>
+
+    <div class="col-md-4">
+        <h4>Your Journal Entries</h4>
+        @if (!Model.LocalEntries.Any())
+        {
+            <p class="text-muted">No entries yet.</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var je in Model.LocalEntries)
+                {
+                    <li class="list-group-item">
+                        <strong>@je.Title</strong><br />
+                        <small>@je.CreatedAt.ToLocalTime().ToString("g")</small><br />
+                        <a asp-action="Edit" asp-route-id="@je.Id" class="btn btn-sm btn-link">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@je.Id" class="btn btn-sm btn-link text-danger">Delete</a>
+                    </li>
+                }
+            </ul>
         }
     </div>
 </div>

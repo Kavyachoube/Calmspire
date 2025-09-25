@@ -1,25 +1,32 @@
 ﻿using CalmSpire.Data;
 using CalmSpire.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MVC + sessions + HttpContext accessor
-builder.Services.AddControllersWithViews();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient();
-
-// Register services
-builder.Services.AddScoped<NewsApiService>();
-builder.Services.AddScoped<SuggestionEngineService>();
-builder.Services.AddScoped<AuthenticationService>();
-builder.Services.AddScoped<AIChatService>();
-
-// EF Core
+// ------------------ DB ------------------
 builder.Services.AddDbContext<CalmSpireDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Sessions
+// ------------------ Auth ------------------
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+    });
+
+builder.Services.AddAuthorization();
+
+// ------------------ Services ------------------
+builder.Services.AddHttpClient<NewsApiService>();
+builder.Services.AddScoped<AuthenticationService>();  // 👈 Added
+builder.Services.AddScoped<AIChatService>();          // 👈 Added
+builder.Services.AddScoped<SuggestionEngineService>(); // 👈 Agar gratitude ke liye use kar rahi ho
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(2);
@@ -29,6 +36,7 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+// ------------------ Middleware ------------------
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -37,7 +45,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseSession();
 

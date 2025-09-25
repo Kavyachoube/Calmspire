@@ -1,31 +1,27 @@
 ﻿@model IEnumerable<CalmSpire.Models.GratitudeEntry>
 
-@{
-    ViewData["Title"] = "My Gratitude Journal";
+<h3>My Gratitude Journal</h3>
+
+<form asp-action="Create" method="post" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="content" class="form-control" placeholder="Write something you are grateful for..." required />
+        <button class="btn btn-success" type="submit">Add</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No entries yet.</p>
 }
-
-<h2 class="mb-4">My Gratitude Journal</h2>
-
-<a class="btn btn-success mb-3" asp-action="Create">+ Add New</a>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Content</th>
-            <th>Created At</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var entry in Model)
+else
+{
+    <ul class="list-group">
+        @foreach (var e in Model)
         {
-            <tr>
-                <td>@entry.Content</td>
-                <td>@entry.CreatedAt.ToString("g")</td>
-                <td>
-                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@entry.Id">Delete</a>
-                </td>
-            </tr>
+            <li class="list-group-item">
+                <div class="small text-muted">@e.CreatedAt.ToLocalTime().ToString("g")</div>
+                <div>@e.Content</div>
+            </li>
         }
-    </tbody>
-</table>
+    </ul>
+}
