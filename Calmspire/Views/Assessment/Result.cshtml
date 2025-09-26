@@ -1,24 +1,38 @@
 ﻿@model CalmSpire.Models.AssessmentResult
 @{
-    var history = ViewBag.History as List<CalmSpire.Models.AssessmentResult>;
+    ViewData["Title"] = "Your Assessment Result";
 }
 
-<h2>@Model.Assessment.Title - Your Result</h2>
-<p><b>Score:</b> @Model.Score</p>
-<p><b>Interpretation:</b> @Model.Interpretation</p>
-<p><i>Completed at: @Model.CompletedAt</i></p>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4 p-5 text-center">
+        <h2 class="fw-bold mb-4">Your Result</h2>
+        <p class="lead text-muted">
+            You just completed: <strong>@Model.Assessment?.Title</strong>
+        </p>
 
-<h3>Recent Attempts</h3>
-@if (history != null && history.Any())
-{
-    <ul>
-        @foreach (var h in history)
-        {
-            <li>Score: @h.Score - @h.CompletedAt</li>
-        }
-    </ul>
-}
-else
-{
-    <p>No past attempts.</p>
-}
+        <div class="alert alert-info rounded-4 mt-4">
+            <h4 class="fw-bold">Score: @Model.Score</h4>
+            <p>@Model.Interpretation</p>
+        </div>
+
+        <h5 class="mt-5">📜 Recent Attempts</h5>
+        <ul class="list-group mt-3">
+            @foreach (var past in (IEnumerable<CalmSpire.Models.AssessmentResult>)ViewBag.History)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>@past.CompletedAt.ToString("MMM dd, yyyy HH:mm")</span>
+                    <span class="badge bg-primary rounded-pill">Score: @past.Score</span>
+                </li>
+            }
+        </ul>
+
+        <div class="mt-4">
+            <a href="@Url.Action("Index", "Assessment")" class="btn btn-outline-primary rounded-pill px-4">
+                ← Back to Assessments
+            </a>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-success rounded-pill px-4 ms-2">
+                Go to Dashboard →
+            </a>
+        </div>
+    </div>
+</div>

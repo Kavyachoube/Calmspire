@@ -1,6 +1,18 @@
 ﻿@model CalmSpire.Models.Assessment
+@{
+    ViewData["Title"] = "Start Assessment";
+}
 
-<h2>@Model.Title</h2>
-<p>@Model.Description</p>
-
-<a href="@Url.Action("Questions","Assessment", new { id=Model.Id })">Begin</a>
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4 p-5 text-center">
+        <h2 class="fw-bold">@Model.Title</h2>
+        <p class="text-muted mb-4">@Model.Description</p>
+        <p class="fst-italic text-secondary">
+            This test will take only a few minutes. Please answer honestly.
+        </p>
+        <a href="@Url.Action("Questions", "Assessment", new { id = Model.Id })"
+           class="btn btn-success btn-lg rounded-pill mt-4 px-5">
+            Start Now →
+        </a>
+    </div>
+</div>
