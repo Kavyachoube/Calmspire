@@ -1,32 +1,22 @@
-﻿using CalmSpire.Models.ViewModels;
-using CalmSpire.Services;
-using CalmSpire.Data;
+﻿using CalmSpire.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
+using System.Threading.Tasks;
 
 namespace CalmSpire.Controllers
 {
     public class JournalController : Controller
     {
-        private readonly CalmSpireDbContext _context;
-        private readonly NewsApiService _newsApi;
+        private readonly NewsApiService _newsApiService;
 
-        public JournalController(CalmSpireDbContext context, NewsApiService newsApi)
+        public JournalController(NewsApiService newsApiService)
         {
-            _context = context;
-            _newsApi = newsApi;
+            _newsApiService = newsApiService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string topic = "Mental Health")
         {
-            var model = new JournalIndexViewModel
-            {
-                LocalEntries = _context.JournalEntries.ToList(),
-                Articles = await _newsApi.GetMentalHealthArticlesAsync()
-            };
-
-            return View(model);
+            var articles = await _newsApiService.GetArticlesByTopicAsync(topic);
+            return View(articles); // View ko List<Article> milegi
         }
     }
 }

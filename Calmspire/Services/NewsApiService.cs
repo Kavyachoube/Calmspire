@@ -1,44 +1,46 @@
-﻿using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using CalmSpire.Models;
+﻿using Newtonsoft.Json.Linq;
 
 namespace CalmSpire.Services
 {
     public class NewsApiService
     {
-        private readonly HttpClient _http;
+        private readonly HttpClient _httpClient;
+        private const string ApiKey = "2b96209a98aa827160881f0399b71f9b";
+        // 👆 यहाँ अपनी gnews.io API key डालना है (appsettings.json से भी ले सकते हो)
 
-        public NewsApiService(HttpClient http)
+        public NewsApiService(HttpClient httpClient)
         {
-            _http = http;
+            _httpClient = httpClient;
         }
 
-        public async Task<List<Article>> GetMentalHealthArticlesAsync()
+        public async Task<List<Article>> GetArticlesByTopicAsync(string topic)
         {
-            var response = await _http.GetAsync("https://newsapi.org/v2/everything?q=mental+health&apiKey=YOUR_API_KEY");
-            if (!response.IsSuccessStatusCode)
-            {
-                return new List<Article>(); // fallback
-            }
+            if (string.IsNullOrWhiteSpace(topic))
+                topic = "mental health";
 
-            using var stream = await response.Content.ReadAsStreamAsync();
-            var json = await JsonDocument.ParseAsync(stream);
+            var url = $"https://gnews.io/api/v4/search?q={Uri.EscapeDataString(topic)}&lang=en&token={ApiKey}";
+            var response = await _httpClient.GetStringAsync(url);
 
-            var articles = new List<Article>();
-            foreach (var item in json.RootElement.GetProperty("articles").EnumerateArray())
-            {
-                articles.Add(new Article
+            var json = JObject.Parse(response);
+
+            var articles = json["articles"]
+                .Select(a => new Article
                 {
-                    Title = item.GetProperty("title").GetString() ?? "",
-                    Description = item.GetProperty("description").GetString() ?? "",
-                    Url = item.GetProperty("url").GetString() ?? "#",
-                    UrlToImage = item.TryGetProperty("urlToImage", out var img) ? img.GetString() : null
-                });
-            }
+                    Title = (string)a["title"],
+                    Description = (string)a["description"],
+                    Url = (string)a["url"],
+                    UrlToImage = (string)a["image"]
+                }).ToList();
 
             return articles;
         }
+    }
+
+    public class Article
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Url { get; set; } = "#";
+        public string? UrlToImage { get; set; }
     }
 }

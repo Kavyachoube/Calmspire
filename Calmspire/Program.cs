@@ -21,9 +21,9 @@ builder.Services.AddAuthorization();
 
 // ------------------ Services ------------------
 builder.Services.AddHttpClient<NewsApiService>();
-builder.Services.AddScoped<AuthenticationService>();  // 👈 Added
-builder.Services.AddScoped<AIChatService>();          // 👈 Added
-builder.Services.AddScoped<SuggestionEngineService>(); // 👈 Agar gratitude ke liye use kar rahi ho
+builder.Services.AddScoped<AuthenticationService>();   // 👈 Auth service
+builder.Services.AddScoped<AIChatService>();           // 👈 AI chat service
+builder.Services.AddScoped<SuggestionEngineService>(); // 👈 Gratitude suggestion engine
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();

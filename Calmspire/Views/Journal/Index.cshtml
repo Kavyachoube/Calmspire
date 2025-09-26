@@ -1,48 +1,33 @@
-﻿@model CalmSpire.Models.ViewModels.JournalIndexViewModel
+﻿@model List<CalmSpire.Services.Article>
 
-<h2>Mental Health Articles & Your Journal</h2>
+@{
+    ViewData["Title"] = "Journals & Stories";
+}
 
-<div class="row">
-    <div class="col-md-8">
-        <h4>Articles</h4>
-        @if (!Model.Articles.Any())
+<h2 class="mb-4">Journals, Blogs & Stories</h2>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var article in Model)
         {
-            <p class="text-muted">No articles available right now.</p>
-        }
-        else
-        {
-            foreach (var a in Model.Articles)
-            {
-                <div class="card mb-3">
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    @if (!string.IsNullOrEmpty(article.UrlToImage))
+                    {
+                        <img src="@article.UrlToImage" class="card-img-top" alt="News Image" />
+                    }
                     <div class="card-body">
-                        <h5>@a.Title</h5>
-                        <p>@a.Description</p>
-                        <a class="btn btn-sm btn-outline-primary" href="@a.Url" target="_blank">Read more</a>
+                        <h5 class="card-title">@article.Title</h5>
+                        <p class="card-text">@article.Description</p>
+                        <a href="@article.Url" target="_blank" class="btn btn-primary">Read More</a>
                     </div>
                 </div>
-            }
+            </div>
         }
     </div>
-
-    <div class="col-md-4">
-        <h4>Your Journal Entries</h4>
-        @if (!Model.LocalEntries.Any())
-        {
-            <p class="text-muted">No entries yet.</p>
-        }
-        else
-        {
-            <ul class="list-group">
-                @foreach (var je in Model.LocalEntries)
-                {
-                    <li class="list-group-item">
-                        <strong>@je.Title</strong><br />
-                        <small>@je.CreatedAt.ToLocalTime().ToString("g")</small><br />
-                        <a asp-action="Edit" asp-route-id="@je.Id" class="btn btn-sm btn-link">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@je.Id" class="btn btn-sm btn-link text-danger">Delete</a>
-                    </li>
-                }
-            </ul>
-        }
-    </div>
-</div>
+}
+else
+{
+    <p>No articles found.</p>
+}
