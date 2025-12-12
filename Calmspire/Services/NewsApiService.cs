@@ -5,8 +5,8 @@ namespace CalmSpire.Services
     public class NewsApiService
     {
         private readonly HttpClient _httpClient;
-        private const string ApiKey = "2b96209a98aa827160881f0399b71f9b";
-        // 👆 यहाँ अपनी gnews.io API key डालना है (appsettings.json से भी ले सकते हो)
+        private const string ApiKey = "api key here";
+        //
 
         public NewsApiService(HttpClient httpClient)
         {
